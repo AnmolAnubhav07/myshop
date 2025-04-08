@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Details</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .product-detail {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .product-detail img {
+      width: 300px;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .product-detail h1 {
+      margin-bottom: 1rem;
+    }
+
+    .product-detail p {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .product-detail button {
+      padding: 0.7rem 2rem;
+      margin: 0.5rem;
+      border: none;
+      background-color: #28a745;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .product-detail button.buy-now {
+      background-color: #007bff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="product-detail">
+    <img id="product-image" src="" alt="Product Image">
+    <h1 id="product-name">Product Name</h1>
+    <p id="product-description">Product Description</p>
+    <p id="product-price">₹Price</p>
+
+    <button id="add-to-cart">Add to Cart</button>
+    <button id="buy-now" class="buy-now">Buy Now</button>
+  </div>
+
+  <script>
+    // Get product info from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = urlParams.get('name');
+    const price = urlParams.get('price');
+    const image = urlParams.get('image');
+    const description = urlParams.get('description');
+
+    // Populate the page
+    document.getElementById('product-name').textContent = name;
+    document.getElementById('product-price').textContent = "₹" + price;
+    document.getElementById('product-image').src = image;
+    document.getElementById('product-description').textContent = description;
+
+    // Add to cart
+    document.getElementById('add-to-cart').addEventListener('click', () => {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      cart.push({ name, price });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert(name + " added to cart!");
+    });
+
+    // Buy Now
+    document.getElementById('buy-now').addEventListener('click', () => {
+      alert("Buying " + name + " for ₹" + price);
+    });
+  </script>
+
+</body>
+</html>

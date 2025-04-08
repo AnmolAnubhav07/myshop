@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cart - MyShop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f2f5f7;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 2rem;
+      font-size: 2.5rem;
+    }
+
+    .cart-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .cart-item {
+      background: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+    }
+
+    .cart-item:hover {
+      transform: scale(1.02);
+    }
+
+    .cart-item-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-item-name {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #222;
+    }
+
+    .cart-item-price {
+      color: #666;
+      margin-top: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .cart-item button {
+      background-color: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .cart-item button:hover {
+      background-color: #e63946;
+    }
+
+    .total {
+      text-align: right;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #333;
+      margin-top: 2rem;
+	 text-align: center;
+    }
+
+    .empty {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 1.5rem;
+      color: #777;
+    }
+
+    form {
+      margin-top: 3rem;
+      background: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    form h2 {
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: #333;
+    }
+
+    form input, form textarea {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    form button {
+      width: 100%;
+      padding: 1rem;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    form button:hover {
+      background-color: #388e3c;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>🛒 Your Cart</h1>
+
+  <div class="cart-container" id="cart-items"></div>
+
+  <div class="total" id="total-amount"></div>
+
+  <!-- Address Form -->
+  <form id="checkout-form">
+    <h2>Shipping Details</h2>
+    <input type="text" id="name" placeholder="Full Name" required>
+    <input type="text" id="address" placeholder="Address" required>
+    <input type="tel" id="phone" placeholder="Phone Number" required>
+    <textarea id="notes" placeholder="Any special instructions? (Optional)"></textarea>
+    <button type="submit">Buy Now</button>
+  </form>
+
+  <script>
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartItemsDiv = document.getElementById('cart-items');
+      const totalAmountDiv = document.getElementById('total-amount');
+
+      if (cart.length === 0) {
+        cartItemsDiv.innerHTML = '<div class="empty">Your cart is empty!</div>';
+        totalAmountDiv.textContent = '';
+        document.getElementById('checkout-form').style.display = 'none';
+        return;
+      }
+
+      cartItemsDiv.innerHTML = '';
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        total += item.price;
+
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'cart-item';
+
+        itemDiv.innerHTML = `
+          <div class="cart-item-details">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-price">₹${item.price}</div>
+          </div>
+          <button onclick="removeItem(${index})">Remove</button>
+        `;
+
+        cartItemsDiv.appendChild(itemDiv);
+      });
+
+      totalAmountDiv.textContent = 'Total: ₹' + total;
+    }
+
+    function removeItem(index) {
+      let cart = JSON.parse(localStorage.getItem('cart'));
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      loadCart();
+    }
+
+  document.getElementById('checkout-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const name = document.getElementById('name').value.trim();
+  const address = document.getElementById('address').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const notes = document.getElementById('notes').value.trim();
+
+  if (!name || !address || !phone) {
+    alert('Please fill all required fields!');
+    return;
+  }
+
+  // Save both name and address
+  const addressData = {
+    name: name,
+    address: address,
+    phone: phone,
+    notes: notes
+  };
+
+  localStorage.setItem('address', JSON.stringify(addressData));
+
+  localStorage.removeItem('cart'); // Clear cart
+  window.location.href = 'thankyou.html'; // Redirect
+});
+
+
+    loadCart();
+  </script>
+
+</body>
+</html>
+
+

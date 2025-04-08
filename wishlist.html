@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Navbar Better Style */
+    .navbar {
+      background-color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .navbar a {
+      text-decoration: none;
+      color: #333;
+      margin: 0 10px;
+      padding: 10px 18px;
+      border: 2px solid #333;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+      font-weight: bold;
+    }
+    .navbar a:hover {
+      background-color: #333;
+      color: #fff;
+    }
+
+    /* Wishlist Product Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+      padding: 30px;
+    }
+    .product {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 15px;
+      padding: 15px;
+      text-align: center;
+      transition: box-shadow 0.3s ease;
+    }
+    .product:hover {
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .product img {
+      width: 100px; /* smaller image */
+      height: 100px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .product h2 {
+      font-size: 18px;
+      margin: 10px 0 5px;
+    }
+    .product p {
+      color: #666;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    .product button {
+      background-color: #333;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 20px;
+      margin: 5px 0;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      font-size: 14px;
+    }
+    .product button:hover {
+      background-color: #555;
+    }
+
+    /* Toast stays same */
+    #toast {
+      visibility: hidden;
+      min-width: 200px;
+      margin-left: -100px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 8px;
+      padding: 12px;
+      position: fixed;
+      z-index: 1;
+      left: 50%;
+      bottom: 30px;
+      font-size: 16px;
+    }
+    #toast.show {
+      visibility: visible;
+      animation: fadein 0.5s, fadeout 0.5s 2s;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="logo">Home</a>
+    <a href="cart.html" class="cart">🛒 Cart (<span id="cart-count">0</span>)</a>
+    <a href="wishlist.html" class="account">💖 Wishlist</a>
+    <a href="account.html" class="account">My Account</a>
+  </nav>
+
+  <main>
+    <h1>My Wishlist</h1>
+    <div id="wishlist-items" class="product-grid">
+      <!-- Wishlist products will load here -->
+    </div>
+    <div id="empty-message" style="display: none; text-align: center; margin-top: 20px;">
+      <p>Your wishlist is empty 😢</p>
+    </div>
+  </main>
+
+  <div id="toast"></div>
+
+  <script>
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.className = "show";
+      setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2500);
+    }
+
+    function loadWishlist() {
+      const wishlistContainer = document.getElementById('wishlist-items');
+      const emptyMessage = document.getElementById('empty-message');
+      const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+      if (wishlist.length === 0) {
+        emptyMessage.style.display = 'block';
+        return;
+      } else {
+        emptyMessage.style.display = 'none';
+      }
+
+      wishlistContainer.innerHTML = '';
+
+      wishlist.forEach(item => {
+        const productDiv = document.createElement('div');
+        productDiv.className = 'product';
+        productDiv.innerHTML = `
+          <img src="${item.image}" alt="${item.name}">
+          <h2>${item.name}</h2>
+          <p>$${item.price.toFixed(2)}</p>
+          <button class="add-to-cart" data-name="${item.name}" data-price="${item.price}">Add to Cart</button>
+          <button class="remove-from-wishlist" data-name="${item.name}">Remove</button>
+        `;
+        wishlistContainer.appendChild(productDiv);
+      });
+
+      const removeButtons = document.querySelectorAll('.remove-from-wishlist');
+      removeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const name = button.getAttribute('data-name');
+          removeFromWishlist(name);
+        });
+      });
+
+      const addToCartButtons = document.querySelectorAll('.add-to-cart');
+      addToCartButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const name = button.getAttribute('data-name');
+          const price = parseFloat(button.getAttribute('data-price'));
+          let cart = JSON.parse(localStorage.getItem('cart')) || [];
+          cart.push({ name, price });
+          localStorage.setItem('cart', JSON.stringify(cart));
+          updateCartCount();
+          showToast(name + " added to cart!");
+        });
+      });
+    }
+
+    function removeFromWishlist(name) {
+      let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+      wishlist = wishlist.filter(item => item.name !== name);
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      loadWishlist();
+      showToast(name + " removed from wishlist!");
+    }
+
+    function updateCartCount() {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      document.getElementById('cart-count').textContent = cart.length;
+    }
+
+    updateCartCount();
+    loadWishlist();
+  </script>
+
+  <style>
+  .navbar {
+    background-color: #fff;
+    display: flex;
+    justify-content: center; /* center the buttons nicely */
+    align-items: center;
+    padding: 10px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    gap: 10px; /* SMALL gap between buttons */
+  }
+  .navbar a {
+    text-decoration: none;
+    color: #333;
+    padding: 8px 16px;
+    border: 2px solid #333;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    font-size: 16px;
+  }
+  .navbar a:hover {
+    background-color: #333;
+    color: #fff;
+  }
+</style>
+
+
+</body>
+</html>
+

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MyShop</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
+    .navbar { background-color: #333; color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .nav-icons { display: flex; align-items: center; gap: 1rem; }
+    .account, .cart { color: white; text-decoration: none; font-size: 1rem; }
+    .account:hover, .cart:hover { text-decoration: underline; }
+    .search-bar { margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem; flex: 1; justify-content: center; margin-left: 20px; margin-right: 20px; }
+    .search-bar input { padding: 0.5rem; width: 300px; border-radius: 5px; border: none; font-size: 1rem; }
+    .products { display: flex; flex-wrap: wrap; gap: 1rem; padding: 2rem; justify-content: center; }
+    .product { border: 1px solid #ccc; padding: 1rem; width: 250px; text-align: center; border-radius: 10px; box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1); position: relative; }
+    .product img { width: 80%; height: 230px; object-fit: cover; }
+    .product button { margin-top: 0.5rem; padding: 0.5rem 1rem; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    .product button.buy-now { background-color: #007bff; }
+    .product button:hover { opacity: 0.9; }
+    .favorite-button { background: none; border: none; font-size: 1.5rem; cursor: pointer; position: absolute; top: 10px; right: 10px; }
+    .controls { display: flex; gap: 1rem; align-items: center; }
+    #toast { visibility: hidden; min-width: 200px; background-color: #333; color: white; text-align: center; border-radius: 5px; padding: 1rem; position: fixed; top: 20px; right: 20px; z-index: 1000; }
+    #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2s; }
+    @keyframes fadein { from { top: 0; opacity: 0; } to { top: 20px; opacity: 1; } }
+    @keyframes fadeout { from { top: 20px; opacity: 1; } to { top: 0; opacity: 0; } }
+    .dark-mode { background-color: #121212; color: #e0e0e0; }
+  </style>
+</head>
+
+<body>
+
+<div class="sale-banner">
+  🎉 Big Sale! Limited Time Offer 🎉
+</div>
+
+  <!-- Toast Notification -->
+  <div id="toast">Item added to cart!</div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">MyShop</div>
+
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="Search products...">
+    </div>
+
+    <div class="nav-icons controls">
+      <select id="sort-select">
+        <option value="">Sort</option>
+        <option value="name">Sort by Name</option>
+        <option value="price">Sort by Price</option>
+      </select>
+      <button id="toggle-dark-mode" style="background: none; border: 1px solid white; color: white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">🌙</button>
+      <button id="clear-cart" style="background: none; border: 1px solid white; color: white; padding: 0.5rem; border-radius: 5px; cursor: pointer;">🗑️ Clear Cart</button>
+      <a href="account.html" class="account">👤 My Account</a>
+<a href="wishlist.html" class="account">💖 Wishlist</a>
+      <a href="cart.html" class="cart">🛒 Cart (<span id="cart-count">0</span>)</a>
+    </div>
+  </nav>
+
+  <!-- Products Section -->
+  <section class="products" id="products-container">
+
+    <div class="product" data-name="Smartphone" data-price="24999">
+      <button class="favorite-button">🤍</button>
+      <img src="images/product1.jpg" alt="Smartphone">
+      <h3>Smartphone</h3>
+<div class="rating" data-rating="4.5"></div>
+
+      <p>₹24,999</p>
+      <a href="product.html?name=Smartphone&price=24999&image=images/product1.jpg&description=Latest+Smartphone+with+AMOLED+Display" class="view-details">
+        <button>View Details</button>
+      </a>
+      <button class="add-to-cart" data-name="Smartphone" data-price="24999">Add to Cart</button>
+      <button class="buy-now" data-name="Smartphone" data-price="24999">Buy Now</button>
+    </div>
+
+    <div class="product" data-name="Headphones" data-price="5000">
+      <button class="favorite-button">🤍</button>
+      <img src="images/product2.jpg" alt="Headphones">
+      <h3>Headphones</h3>
+<div class="rating" data-rating="4.5"></div>
+
+      <p>₹5,000</p>
+      <a href="product.html?name=Wireless+Headphones&price=5000&image=images/product2.jpg&description=Noise-cancelling+Wireless+Headphones+with+20-hour+battery+life" class="view-details">
+        <button>View Details</button>
+      </a>
+      <button class="add-to-cart" data-name="Headphones" data-price="5000">Add to Cart</button>
+      <button class="buy-now" data-name="Headphones" data-price="5000">Buy Now</button>
+    </div>
+
+    <div class="product" data-name="Laptop" data-price="99000">
+      <button class="favorite-button">🤍</button>
+      <img src="images/product3.jpg" alt="Laptop">
+      <h3>Laptop</h3>
+<div class="rating" data-rating="4.5"></div>
+
+      <p>₹99,000</p>
+      <a href="product.html?name=Laptop&price=99000&image=images/product3.jpg&description=Powerful+Laptop+for+work+and+gaming+with+Intel+i7+Processor" class="view-details">
+        <button>View Details</button>
+      </a>
+      <button class="add-to-cart" data-name="Laptop" data-price="99000">Add to Cart</button>
+      <button class="buy-now" data-name="Laptop" data-price="99000">Buy Now</button>
+    </div>
+
+    <div class="product" data-name="Smartwatch" data-price="2500">
+      <button class="favorite-button">🤍</button>
+      <img src="images/product4.jpg" alt="Smartwatch">
+      <h3>Smartwatch</h3>
+<div class="rating" data-rating="4.5"></div>
+
+      <p>₹2,500</p>
+      <a href="product.html?name=Smart+Watch&price=2500&image=images/product4.jpg&description=Smart+Watch+with+health+tracking+features+and+customizable+watch+faces" class="view-details">
+        <button>View Details</button>
+      </a>
+      <button class="add-to-cart" data-name="Smartwatch" data-price="2500">Add to Cart</button>
+      <button class="buy-now" data-name="Smartwatch" data-price="2500">Buy Now</button>
+    </div>
+
+  </section>
+
+  <!-- JavaScript -->
+  <script>
+  // Toast
+  function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.className = "show";
+    setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2500);
+  }
+
+  // Cart Setup
+  const addToCartButtons = document.querySelectorAll('.add-to-cart');
+  if (!localStorage.getItem('cart')) {
+    localStorage.setItem('cart', JSON.stringify([]));
+  }
+  addToCartButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const name = button.getAttribute('data-name');
+      const price = parseFloat(button.getAttribute('data-price'));
+      let cart = JSON.parse(localStorage.getItem('cart'));
+      cart.push({ name, price });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      showToast(name + " added to cart!");
+    });
+  });
+
+  // Buy Now Buttons
+  const buyNowButtons = document.querySelectorAll('.buy-now');
+  buyNowButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const name = button.getAttribute('data-name');
+      const price = parseFloat(button.getAttribute('data-price'));
+      let cart = JSON.parse(localStorage.getItem('cart'));
+      cart.push({ name, price });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      window.location.href = "cart.html";
+    });
+  });
+
+  // Clear Cart
+  document.getElementById('clear-cart').addEventListener('click', () => {
+    localStorage.setItem('cart', JSON.stringify([]));
+    updateCartCount();
+    showToast('Cart cleared!');
+  });
+
+  // Update Cart Count
+  function updateCartCount() {
+    let cart = JSON.parse(localStorage.getItem('cart'));
+    document.getElementById('cart-count').textContent = cart.length;
+  }
+  updateCartCount();
+
+  // Search
+  const searchInput = document.getElementById('search-input');
+  searchInput.addEventListener('input', () => {
+    const searchText = searchInput.value.toLowerCase();
+    const products = document.querySelectorAll('.product');
+    products.forEach(product => {
+      const productName = product.getAttribute('data-name').toLowerCase();
+      if (productName.includes(searchText)) {
+        product.style.display = 'block';
+      } else {
+        product.style.display = 'none';
+      }
+    });
+  });
+
+  // Wishlist
+  const favoriteButtons = document.querySelectorAll('.favorite-button');
+  if (!localStorage.getItem('wishlist')) {
+    localStorage.setItem('wishlist', JSON.stringify([]));
+  }
+
+  function updateFavoriteIcons() {
+    let wishlist = JSON.parse(localStorage.getItem('wishlist'));
+    favoriteButtons.forEach(button => {
+      const product = button.closest('.product');
+      const name = product.getAttribute('data-name');
+      if (wishlist.find(item => item.name === name)) {
+        button.textContent = '❤️';
+      } else {
+        button.textContent = '🤍';
+      }
+    });
+  }
+
+  favoriteButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const product = button.closest('.product');
+      const name = product.getAttribute('data-name');
+      const price = parseFloat(product.getAttribute('data-price'));
+      const image = product.querySelector('img').src;
+
+      let wishlist = JSON.parse(localStorage.getItem('wishlist'));
+
+      const index = wishlist.findIndex(item => item.name === name);
+
+      if (index !== -1) {
+        wishlist.splice(index, 1);
+        showToast(name + " removed from wishlist!");
+      } else {
+        wishlist.push({ name, price, image });
+        showToast(name + " added to wishlist!");
+      }
+
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      updateFavoriteIcons();
+    });
+  });
+
+  updateFavoriteIcons();
+
+  // Dark Mode
+  const darkModeButton = document.getElementById('toggle-dark-mode');
+  darkModeButton.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+  });
+
+// Render stars based on data-rating attribute
+document.querySelectorAll('.rating').forEach(ratingDiv => {
+  const rating = parseFloat(ratingDiv.getAttribute('data-rating'));
+  const fullStars = Math.floor(rating);
+  const halfStar = rating % 1 !== 0;
+  let stars = '⭐'.repeat(fullStars);
+  if (halfStar) stars += '☆'; // half-star symbol
+  ratingDiv.textContent = stars;
+});
+
+</script>
+
+
+</body>
+</html>

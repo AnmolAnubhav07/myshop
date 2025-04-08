@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thank You - MyShop</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f8f8;
+    }
+
+    .navbar {
+      background-color: #4CAF50;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .navbar .cart {
+      color: white;
+      text-decoration: none;
+      background-color: #388e3c;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+    }
+
+    .thank-you {
+      text-align: center;
+      margin: 4rem auto;
+      padding: 2rem;
+      background: white;
+      max-width: 500px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    .thank-you h2 {
+      color: #4CAF50;
+      margin-bottom: 1rem;
+    }
+
+    .checkmark {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: inline-block;
+      border: 5px solid #4CAF50;
+      position: relative;
+      margin-bottom: 20px;
+      animation: pop 0.5s ease forwards;
+    }
+
+    .checkmark::after {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 10px;
+      width: 20px;
+      height: 40px;
+      border-right: 5px solid #4CAF50;
+      border-bottom: 5px solid #4CAF50;
+      transform: rotate(45deg);
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+
+    .address-box {
+      background-color: #f1f1f1;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      text-align: left;
+    }
+
+    .address-box p {
+      margin: 0.5rem 0;
+      line-height: 1.6;
+    }
+
+    button {
+      margin-top: 2rem;
+      padding: 0.8rem 1.5rem;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">MyShop</div>
+    <a href="index.html" class="cart">🏠 Back to Shop</a>
+  </nav>
+
+  <!-- Thank You Section -->
+  <section class="thank-you">
+    <div class="checkmark"></div>
+    <h2>🎉 Thank You for Your Purchase!</h2>
+    <div id="user-name"></div>
+    <div class="address-box" id="user-address"></div>
+
+    <a href="index.html"><button>Continue Shopping</button></a>
+  </section>
+
+  <!-- JavaScript -->
+  <script>
+    const addressData = JSON.parse(localStorage.getItem('address'));
+
+    if (addressData) {
+      document.getElementById('user-name').innerHTML = `<h3>Thank you, ${addressData.name}!</h3>`;
+      document.getElementById('user-address').innerHTML = `
+        <p><strong>Delivery Address:</strong></p>
+        <p>${addressData.address}</p>
+        <p><strong>Phone:</strong> ${addressData.phone}</p>
+        ${addressData.notes ? `<p><strong>Notes:</strong> ${addressData.notes}</p>` : ''}
+      `;
+
+      // Clear address data after showing
+      localStorage.removeItem('address');
+    } else {
+      document.getElementById('user-name').innerHTML = '<h3>Thank you!</h3>';
+      document.getElementById('user-address').innerHTML = '<p>We are processing your order.</p>';
+    }
+  </script>
+
+</body>
+</html>

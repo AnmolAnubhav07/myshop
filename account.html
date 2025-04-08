@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Account - MyShop</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+    }
+
+    .navbar {
+      background-color: #333;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .account-container {
+      max-width: 500px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .profile-pic {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      border: 2px solid #333;
+    }
+
+    input[type="file"] {
+      margin-top: 1rem;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.5rem 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    button {
+      margin-top: 1rem;
+      padding: 0.8rem 2rem;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .logout-btn {
+      background-color: #dc3545; /* Red button */
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">MyShop</div>
+    <a href="index.html" style="color: white; text-decoration: none;">Home</a>
+  </nav>
+
+  <!-- Account Section -->
+  <div class="account-container">
+    <h2>My Account</h2>
+
+    <img src="images/profile-placeholder.png" alt="Profile Picture" id="profile-pic" class="profile-pic">
+
+    <input type="file" id="upload-pic" accept="image/*">
+
+    <input type="text" id="name" placeholder="Enter your name">
+    <input type="email" id="email" placeholder="Enter your email">
+
+    <button id="save-btn">Save Profile</button>
+    <button id="logout-btn" class="logout-btn">Logout</button>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const nameInput = document.getElementById('name');
+      const emailInput = document.getElementById('email');
+      const profilePic = document.getElementById('profile-pic');
+
+      // Load saved profile
+      let profile = JSON.parse(localStorage.getItem('profile')) || {};
+
+      if (profile.name) nameInput.value = profile.name;
+      if (profile.email) emailInput.value = profile.email;
+      if (profile.image) profilePic.src = profile.image;
+
+      // Save profile
+      document.getElementById('save-btn').addEventListener('click', () => {
+        const updatedProfile = {
+          name: nameInput.value,
+          email: emailInput.value,
+          image: profile.image || 'images/profile-placeholder.png'
+        };
+
+        localStorage.setItem('profile', JSON.stringify(updatedProfile));
+        alert('Profile saved successfully!');
+      });
+
+      // Upload and preview profile picture
+      document.getElementById('upload-pic').addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            profilePic.src = e.target.result;
+            profile.image = e.target.result;
+            localStorage.setItem('profile', JSON.stringify(profile));
+          }
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Logout button clears profile and redirects
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('profile');
+        alert('Logged out successfully!');
+        window.location.href = 'index.html'; // Redirect to homepage
+      });
+    });
+  </script>
+
+</body>
+</html>
+
